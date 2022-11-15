@@ -87,7 +87,9 @@ public class Db2Configuration {
    */
   @Primary
   @Bean(name = "db2EntityManagerFactory")
-  public LocalContainerEntityManagerFactoryBean db2EntityManagerFactory(@Qualifier("db2DataSource") Db2CustomRoutingDataSource dataSource) {
+  public LocalContainerEntityManagerFactoryBean db2EntityManagerFactory(@Qualifier("db2DataSource") Db2CustomRoutingDataSource dataSource,
+                                                                        Db2MultiTenantConnectionProvider multiTenantConnectionProviderImpl,
+                                                                        Db2MultiTenantResolver currentTenantIdentifierResolverImpl) {
     LocalContainerEntityManagerFactoryBean em
         = new LocalContainerEntityManagerFactoryBean();
     em.setDataSource(dataSource);
@@ -109,22 +111,22 @@ public class Db2Configuration {
             "org.hibernate.dialect.DB2400Dialect"));
 
     properties.put(AvailableSettings.DEFAULT_SCHEMA,
-        env.getProperty("spring.db2.datasource.default_schema_name",
-            String.class,
-            "ABVVTFX")
-            + Db2MultiTenantResolver.DEFAULT_TENANT_IDENTIFIER);
-    properties.put(AvailableSettings.DEFAULT_SCHEMA,
-        env.getProperty("spring.jpa.properties.hibernate.default_schema",
-            String.class,
-            "ABVVTFX")
-            + Db2MultiTenantResolver.DEFAULT_TENANT_IDENTIFIER);
+            env.getProperty("spring.db2.datasource.default_schema_name",
+                    String.class,
+                    "ABVVTFX")
+                    + Db2MultiTenantResolver.DEFAULT_TENANT_IDENTIFIER);
+/*    properties.put(AvailableSettings.DEFAULT_SCHEMA,
+            env.getProperty("spring.jpa.properties.hibernate.default_schema",
+                    String.class,
+                    "ABVVTFX")
+                    + Db2MultiTenantResolver.DEFAULT_TENANT_IDENTIFIER);*/
 
     properties.put(AvailableSettings.MULTI_TENANT,
         MultiTenancyStrategy.SCHEMA);
     properties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER,
-        new Db2MultiTenantConnectionProvider(dataSource));
+            multiTenantConnectionProviderImpl);
     properties.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER,
-        new Db2MultiTenantResolver());
+            currentTenantIdentifierResolverImpl);
 
     properties.put(AvailableSettings.SHOW_SQL,
         env.getProperty("spring.jpa.show-sql",

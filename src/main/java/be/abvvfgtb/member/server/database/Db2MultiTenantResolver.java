@@ -17,7 +17,7 @@ public class Db2MultiTenantResolver implements CurrentTenantIdentifierResolver {
   private static final Logger LOG = LoggerFactory.getLogger(Db2MultiTenantResolver.class);
 
   public static final String DEFAULT_SCHEMA_PREFIX = "ABVVPFX";
-  public static final String DEFAULT_TENANT_IDENTIFIER = "0";
+  public static final String DEFAULT_TENANT_IDENTIFIER = "R";
 
   static {
     Map<String, String> tenantMap = new HashMap<>();
@@ -41,11 +41,11 @@ public class Db2MultiTenantResolver implements CurrentTenantIdentifierResolver {
   }
 
   // The variable currentTenant HAS TO BE thread safe
-  private static final ThreadLocal<String> currentTenant = new ThreadLocal<String>();
+  //private static final ThreadLocal<String> currentTenant = new ThreadLocal<String>();
   private static final Map<String, String> validTenants;
 
   public static void reset(String tenantIdentifier) {
-    currentTenant.remove();
+    Db2TenantContext.clear();
   }
 
   public static Map<String, String> getTenants() {
@@ -64,7 +64,8 @@ public class Db2MultiTenantResolver implements CurrentTenantIdentifierResolver {
       if (LOG.isDebugEnabled()) {
         LOG.debug("DB2MultiTenantResolver::setTenant - {}", tenantIdentifier);
       }
-      currentTenant.set(tenantIdentifier);
+      Db2TenantContext.setCurrentTenant(tenantIdentifier);
+      /*currentTenant.set(tenantIdentifier);*/
     } else {
       if (LOG.isDebugEnabled()) {
         LOG.debug("DB2MultiTenantResolver::setTenant - INVALID TENANT: {}", tenantIdentifier);
@@ -73,7 +74,10 @@ public class Db2MultiTenantResolver implements CurrentTenantIdentifierResolver {
   }
 
   public static String getTenant() {
+    return Db2TenantContext.getCurrentTenant();
+/*
     return currentTenant.get();
+*/
   }
 
   /**

@@ -47,18 +47,29 @@ public class MemberService implements IMemberService, Db2Service{
         this.isProdEnv = Arrays.asList(this.env.getActiveProfiles()).contains("prod");
     }
 
-    public String getMember(String firstName, String lastName) {
-        Db2MultiTenantResolver.setTenant(
+    public BaliFZZ getMember(String firstName, String lastName) {
+/*        Db2MultiTenantResolver.setTenant(
                 this.schemaPrefix
-                        + Db2MultiTenantResolver.DEFAULT_TENANT_IDENTIFIER);
+                        + Db2MultiTenantResolver.DEFAULT_TENANT_IDENTIFIER);*/
+/*        Db2MultiTenantResolver.setTenant(
+                this.schemaPrefix
+                        + "R");*/
 
         List<BaliFZZ> baliFUSOptional = baliFzz.findGsmByFirstNameAndLastName(firstName, lastName);
         if(!baliFUSOptional.isEmpty()) {
             BaliFZZ baliFzz = baliFUSOptional.get(0);
             if(!StringUtils.isBlank(baliFzz.getGsmNumber()))
-            return baliFzz.getGsmNumber();
+            return baliFzz;
         }
-        return "No Gsm Number Found!";
+        return null;
+    }
+
+    public void updatephonenumber(String id, String phone) {
+
+        Db2MultiTenantResolver.setTenant(
+                this.schemaPrefix
+                        + "R");
+        baliFzz.updatePhone(id, phone);
     }
 
 }

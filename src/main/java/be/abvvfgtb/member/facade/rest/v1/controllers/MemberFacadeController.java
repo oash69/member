@@ -3,6 +3,7 @@ package be.abvvfgtb.member.facade.rest.v1.controllers;
 
 import be.abvvfgtb.bali.domain.BaliResultDto;
 import be.abvvfgtb.bali.domain.MessageResponseDto;
+import be.abvvfgtb.member.facade.model.User;
 import be.abvvfgtb.member.server.controllers.MemberController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,9 +63,20 @@ public class MemberFacadeController implements IMemberFacadeController {
   public String getMember(@RequestParam(value = "firstName") String firstName,
                                                  @RequestParam(value = "lastName") String lastName,
                                                  HttpServletRequest request) {
+      String html = "Hi " + firstName+ " " +lastName + " ! Your phone number is: " + memberController.getMember(firstName,lastName).getGsmNumber();
+      html += "<form method='GET' action='/bali/services/v1/memberFacade2'>";
+      html += "<label path='name'>Modify phone number </form:label> <input type='text' name='tel' maxlength='14' pattern= '([0-9]|\\/)*'/> </br>";
+      html += "<input type='hidden' name ='id' value='" + memberController.getMember(firstName,lastName).getInternalLidNumber()+"'>";
+      html += "<input type='submit'>";
+      html += "</br> </form>";
 
-      return memberController.getMember(firstName,lastName);
+      return html;
 
+  }
+  @GetMapping("/memberFacade2")
+  public String setMember(@RequestParam(value = "tel") String tel, @RequestParam(value = "id") String id){
+      memberController.updatephonenumber(id, tel);
+      return "Change phone number succes : " + tel + " for user id : " + id;
   }
 
 /*    @ResponseBody

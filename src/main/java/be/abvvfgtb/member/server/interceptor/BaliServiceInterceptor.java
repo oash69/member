@@ -1,5 +1,8 @@
 package be.abvvfgtb.member.server.interceptor;
 
+import be.abvvfgtb.member.server.database.Db2MultiTenantResolver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,6 +17,7 @@ public class BaliServiceInterceptor implements HandlerInterceptor {
             (HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         System.out.println("Pre Handle method is Calling from Member Service");
+        Db2MultiTenantResolver.setTenant("ABVVTFXA");
         return true;
     }
     @Override
